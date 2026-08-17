@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You</title>
+  <style>
+    :root {
+      --bg1: #fff5fa;
+      --bg2: #f2ebff;
+      --pink: #ff5ca8;
+      --rose: #ff7aa2;
+      --lavender: #b38cff;
+      --deep: #4b2b63;
+      --white: #fffdfd;
+      --gold: #ffd166;
+      --shadow: rgba(75, 43, 99, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--deep);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      bottom: -40px;
+      font-size: 18px;
+      opacity: 0;
+      animation: floatUp 12s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.7) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.9; }
+      100% { transform: translateY(-120vh) scale(1.4) rotate(20deg); opacity: 0; }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 20px;
+    }
+
+    .app {
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 30px;
+      box-shadow: 0 28px 80px var(--shadow);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 20px 18px 0;
+    }
+
+    .tab {
+      border: none;
+      background: rgba(255,255,255,0.7);
+      color: var(--deep);
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 20px rgba(75,43,99,0.08);
+    }
+
+    .tab.active,
+    .tab:hover {
+      background: linear-gradient(135deg, var(--pink), var(--rose));
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(255,92,168,0.25);
+    }
+
+    .page {
+      display: none;
+      padding: 26px 24px 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      text-align: center;
+      padding: 6px 10px 18px;
+    }
+
+    h1 {
+      margin: 10px 0 12px;
+      font-size: clamp(2.3rem, 6vw, 4.4rem);
+      line-height: 1.08;
+      color: var(--deep);
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 0 auto;
+      font-size: 1.08rem;
+      color: rgba(75,43,99,0.8);
+      line-height: 1.7;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 16px 38px rgba(75,43,99,0.08);
+    }
+
+    .big-heart {
+      text-align: center;
+      font-size: clamp(3rem, 8vw, 6rem);
+      margin: 8px 0 6px;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+
+    .message {
+      text-align: center;
+      font-size: clamp(1.15rem, 3vw, 1.7rem);
+      line-height: 1.7;
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--deep);
+    }
+
+    .quote {
+      font-weight: 700;
+      color: rgba(75,43,99,0.96);
+      font-style: italic;
+    }
+
+    .cta {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    button.action {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button.action:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--pink), var(--rose));
+      color: white;
+      box-shadow: 0 16px 28px rgba(255,92,168,0.25);
+    }
+
+    .secondary {
+      background: rgba(255,255,255,0.8);
+      color: var(--deep);
+      box-shadow: 0 12px 24px rgba(75,43,99,0.08);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .mini {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 20px;
+      padding: 20px 14px;
+      text-align: center;
+      box-shadow: 0 12px 22px rgba(75,43,99,0.06);
+    }
+
+    .mini .emoji {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .mini strong {
+      font-size: 1.08rem;
+    }
+
+    .meter {
+      width: min(520px, 100%);
+      height: 18px;
+      margin: 26px auto 10px;
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff7aa2, #ff5ca8, #ffd166);
+      transition: width 0.8s ease;
+    }
+
+    .meter-label {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--deep);
+    }
+
+    .footer-tag {
+      text-align: center;
+      margin-top: 20px;
+      color: rgba(75,43,99,0.8);
+      font-size: 0.98rem;
+    }
+
+    @media (max-width: 600px) {
+      .wrap { margin: 18px auto; padding: 12px; }
+      .page { padding: 18px 14px 28px; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="sparkles" id="sparkles"></div>
+
+  <div class="wrap">
+    <div class="app">
+      <nav class="topbar" aria-label="page navigation">
+        <button class="tab active" data-page="page1">Hello Angel</button>
+        <button class="tab" data-page="page2">Thank you</button>
+        <button class="tab" data-page="page3">Miss You</button>
+        <button class="tab" data-page="page4">Forever</button>
+      </nav>
+
+      <section class="page active" id="page1">
+        <div class="hero">
+          <h1>To you, my favorite person</h1>
+          <p class="subtitle">I just want you to know that you make me so happy</p>
+        </div>
+
+        <div class="card">
+          <div class="big-heart">💗</div>
+          <div class="message">
+            I think you are the <span class="quote">most beautiful human I have ever met</span>.<br /><br />
+          </div>
+          <div class="cta">
+            <button class="action primary" data-next="page2">Keep going</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page2">
+        <div class="hero">
+          <h1>You are beautiful in every way</h1>
+        </div>
+
+        <div class="card">
+          <div class="message">
+            It’s your smile, your kindness, your soul, the way you make the world feel softer and warmer just by being in it.<br /><br />
+            You are beautiful in the way you care, the way you love, and the way you make my life feel brighter.
+          </div>
+
+          <div class="grid">
+            <div class="mini"><span class="emoji">✨</span><strong>Your smile</strong></div>
+            <div class="mini"><span class="emoji">💫</span><strong>Your heart</strong></div>
+            <div class="mini"><span class="emoji">🌷</span><strong>Your soul</strong></div>
+          </div>
+
+          <div class="cta">
+            <button class="action secondary" data-prev="page1">Back</button>
+            <button class="action primary" data-next="page3">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page3">
+        <div class="hero">
+          <h1>I miss you</h1>
+        </div>
+
+        <div class="card">
+          <div class="message">
+            I miss you more than I can say.<br /><br />
+            I miss your voice, your warmth, your presence, and the way everything feels a little better when you’re near.
+          </div>
+
+          <div class="meter" aria-label="love meter">
+            <div class="meter-fill" id="meterFill"></div>
+          </div>
+          <div class="meter-label" id="meterLabel">Love level: 100%</div>
+
+          <div class="cta">
+            <button class="action secondary" data-prev="page2">Back</button>
+            <button class="action primary" data-next="page4">Final page</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page4">
+        <div class="hero">
+          <h1>Always yours</h1>
+        </div>
+
+        <div class="card">
+          <div class="big-heart">💖</div>
+          <div class="message">
+            So I’m telling you this plainly because it’s true:<br /><br />
+            You have changed my life for the better in such a short space of time, and I'll always be so proud to be the one who gets to share this feeling with you.'
+          </div>
+
+          <div class="footer-tag">I hope you feel how much love I have for you.</div>
+
+          <div class="cta">
+            <button class="action secondary" data-prev="page3">Back</button>
+            <button class="action primary" id="surprise">One more thing</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+
+    function showPage(pageId) {
+      pages.forEach(page => {
+        page.classList.toggle('active', page.id === pageId);
+      });
+
+      tabs.forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.page === pageId);
+      });
+    }
+
+    document.querySelectorAll('[data-next]').forEach(button => {
+      button.addEventListener('click', () => showPage(button.dataset.next));
+    });
+
+    document.querySelectorAll('[data-prev]').forEach(button => {
+      button.addEventListener('click', () => showPage(button.dataset.prev));
+    });
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => showPage(tab.dataset.page));
+    });
+
+    const sparkles = document.getElementById('sparkles');
+    const symbols = ['💖', '💗', '💘', '💞', '💓', '✨'];
+    for (let i = 0; i < 24; i++) {
+      const star = document.createElement('div');
+      star.className = 'sparkle';
+      star.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${(Math.random() * 9).toFixed(2)}s`;
+      star.style.animationDuration = `${(8 + Math.random() * 8).toFixed(2)}s`;
+      star.style.fontSize = `${14 + Math.random() * 22}px`;
+      sparkles.appendChild(star);
+    }
+
+    const meterFill = document.getElementById('meterFill');
+    const meterLabel = document.getElementById('meterLabel');
+    setTimeout(() => {
+      meterFill.style.width = '100%';
+      meterLabel.textContent = 'Love level: 100%';
+    }, 220);
+
+    document.getElementById('surprise').addEventListener('click', () => {
+      alert('You are my favorite person, my best friend, and I hope you know that you are always on my mind. I love you angel 💗');
+    });
+  </script>
+</body>
+</html>
